@@ -11,9 +11,10 @@
   </div>
 </template>
 <script>
-import { h } from 'vue-demi'
-import { StructuredText, Image } from 'vue-datocms'
+import { h } from "vue-demi";
+import { StructuredText } from 'vue-datocms'
 import { request } from '../datocms'
+import Hero from '../components/Hero'
 
 const HOMEPAGE_QUERY = `query HomePage($locale: SiteLocale!) {
   homePage {
@@ -69,14 +70,14 @@ export default {
   methods: {
     renderBlock: ({ record, key }) => {
       if (record.__typename === 'HeroRecord') {
-        return h('div', {}, [
-          h('h1', {}, record.title),
-          h('p', {}, record.description),
-          h(Image, {
-            key,
-            props: { data: record.image.responsiveImage },
-          }),
-        ])
+        return h(Hero, {
+          key,
+          props: {
+            title: record.title,
+            description: record.description,
+            image: record.image.responsiveImage,
+          },
+        })
       }
       return null
     },
