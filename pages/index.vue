@@ -11,10 +11,10 @@
   </div>
 </template>
 <script>
-import { h } from "vue-demi";
+import { h } from 'vue-demi'
 import { StructuredText } from 'vue-datocms'
 import { request } from '../datocms'
-import Hero from '../components/Hero'
+// import Hero from '../components/Hero'
 
 const HOMEPAGE_QUERY = `query HomePage($locale: SiteLocale!) {
   homePage {
@@ -68,9 +68,28 @@ export default {
     })
   },
   methods: {
-    renderBlock: ({ record, key }) => {
+    // renderBlock: ({ record, key }) => {
+    //   if (record.__typename === 'HeroRecord') {
+    //     return h(Hero, {
+    //       key,
+    //       props: {
+    //         title: record.title,
+    //         description: record.description,
+    //         image: record.image.responsiveImage,
+    //       },
+    //     })
+    //   }
+    //   return null
+    // },
+    renderBlock: async ({ record, key }) => {
       if (record.__typename === 'HeroRecord') {
-        return h(Hero, {
+        // TODO: implementation expected but failing with:
+        // [Vue warn]: `createElement()` has been called outside of render function.
+        const hero = await import(
+          /* webpackPrefetch: true */
+          `../components/${record.__typename.replace(/Record/g, '')}/index.vue`
+        );
+        return h(hero.default, {
           key,
           props: {
             title: record.title,
